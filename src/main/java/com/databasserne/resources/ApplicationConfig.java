@@ -5,7 +5,6 @@
  */
 package com.databasserne.resources;
 
-import io.swagger.jaxrs.config.BeanConfig;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 
@@ -17,7 +16,6 @@ import javax.ws.rs.core.Application;
 public class ApplicationConfig extends Application {
 
     public ApplicationConfig() {
-        swaggerConfiguration();
     }
     
     @Override
@@ -25,17 +23,6 @@ public class ApplicationConfig extends Application {
         Set<Class<?>> resources = new java.util.HashSet<>();
         addRestResourceClasses(resources);
         return resources;
-    }
-
-    
-    private void swaggerConfiguration() {
-        BeanConfig bean = new BeanConfig();
-        bean.setVersion("1.0.0");
-        bean.setSchemes(new String[]{"http"});
-        bean.setHost("localhost:8084/web");
-        bean.setBasePath("api");
-        bean.setResourcePackage("com.databasserne.resources.TestResource.java");
-        bean.setScan(true);
     }
 
     private void addRestResourceClasses(Set<Class<?>> resources) {

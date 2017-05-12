@@ -1,6 +1,5 @@
 package com.databasserne.controllers;
 
-import static com.google.common.base.Predicates.not;
 import java.sql.Connection;
 import java.sql.SQLException;
 import static org.hamcrest.CoreMatchers.is;
