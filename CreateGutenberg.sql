@@ -4,13 +4,15 @@ CREATE SCHEMA `gutenberg` DEFAULT CHARACTER SET utf8 ;
 
 CREATE TABLE `gutenberg`.`Books` (
   `ID` INT NOT NULL AUTO_INCREMENT,
-  `Name` VARCHAR(6000) NOT NULL,
-  PRIMARY KEY (`ID`));
+  `Name` VARCHAR(1000) NOT NULL,
+  PRIMARY KEY (`ID`),
+  INDEX `Name` (`Name` ASC));
 
 CREATE TABLE `gutenberg`.`Authors` (
   `ID` INT NOT NULL AUTO_INCREMENT,
   `Name` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`ID`));
+  PRIMARY KEY (`ID`),
+  INDEX `Name` (`Name` ASC));
 
 CREATE TABLE `gutenberg`.`Books_Authors` (
   `Book_ID` INT NOT NULL,
@@ -33,7 +35,8 @@ CREATE TABLE `gutenberg`.`Cities` (
   `Name` VARCHAR(255) NOT NULL,
   `Geolat` FLOAT(10,6) NULL,
   `Geolng` FLOAT(10,6) NULL,
-  PRIMARY KEY (`ID`));
+  PRIMARY KEY (`ID`),
+  INDEX `Name` (`Name` ASC));
   
   CREATE TABLE `gutenberg`.`Books_Cities` (
   `Book_ID` INT NOT NULL,
@@ -50,3 +53,5 @@ CREATE TABLE `gutenberg`.`Cities` (
     REFERENCES `gutenberg`.`Cities` (`ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
+    
+	
