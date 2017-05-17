@@ -1,2 +1,10 @@
 language: java
 sudo: false # faster builds
+
+services:
+	- mysql
+
+before_script:
+	- mysql -e 'DROP DATABASE IF EXIST gutenberg_test'
+	- mysql -e 'CREATE DATABASE IF NOT EXIST gutenberg_test;'
+	- mysql -u root --default-character-set-utf8 gutenberg_test < CreateGutenbergTest.sql
