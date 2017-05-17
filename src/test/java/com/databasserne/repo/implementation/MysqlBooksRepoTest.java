@@ -13,9 +13,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import com.databasserne.models.*;
+import java.sql.SQLException;
+import java.util.Collection;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import org.hamcrest.Matchers;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 
 /**
  *
@@ -37,8 +41,8 @@ public class MysqlBooksRepoTest {
     }
     
     @Before
-    public void setUp() {
-        booksRepo = new MysqlBooksRepo();
+    public void setUp() throws SQLException {
+        
     }
     
     @After
@@ -46,9 +50,19 @@ public class MysqlBooksRepoTest {
     }
 
     @Test
-    public void getBooksAndAuthorFromCityTest() {
+    public void getBooksAndAuthorFromCityTest() throws SQLException {
+        booksRepo = new MysqlBooksRepo("jdbc:mysql://localhost:3306/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
         List<Book> books = booksRepo.getBooksAndAuthorFromCity("Florence");
         
-        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("Hej"))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("The Complete Works of William Shakespeare"))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("La Fiammetta"))));
+    }
+    
+    @Test
+    public void getBooksAndAuthorFromIllegalCityTest() throws SQLException {
+        booksRepo = new MysqlBooksRepo("jdbc:mysql://localhost:3306/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+        List<Book> books = booksRepo.getBooksAndAuthorFromCity("Vrøvl");
+        
+        assertThat(books, is(empty()));
     }
 }
