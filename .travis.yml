@@ -1,9 +1,7 @@
 language: java
 sudo: false # faster builds
-
-services:
+service:
 	- mysql
-
 before_script:
 	- mysql -e 'DROP DATABASE IF EXIST gutenberg_test'
 	- mysql -e 'CREATE DATABASE IF NOT EXIST gutenberg_test;'
