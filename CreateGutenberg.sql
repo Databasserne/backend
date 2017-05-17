@@ -4,7 +4,7 @@ CREATE SCHEMA `gutenberg` DEFAULT CHARACTER SET utf8 ;
 
 CREATE TABLE `gutenberg`.`Books` (
   `ID` INT NOT NULL AUTO_INCREMENT,
-  `Name` VARCHAR(255) NOT NULL,
+  `Name` VARCHAR(6000) NOT NULL,
   PRIMARY KEY (`ID`));
 
 CREATE TABLE `gutenberg`.`Authors` (
@@ -29,7 +29,7 @@ CREATE TABLE `gutenberg`.`Books_Authors` (
     ON UPDATE NO ACTION);
 
 CREATE TABLE `gutenberg`.`Cities` (
-  `ID` INT NOT NULL,
+  `ID` INT NOT NULL AUTO_INCREMENT,
   `Name` VARCHAR(255) NOT NULL,
   `Geolat` FLOAT(10,6) NULL,
   `Geolng` FLOAT(10,6) NULL,

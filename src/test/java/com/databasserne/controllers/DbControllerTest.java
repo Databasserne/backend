@@ -20,6 +20,8 @@ import org.neo4j.driver.v1.Session;
 public class DbControllerTest {
     
     private DbController dbCon;
+    private Connection con;
+    private Session session;
     
     public DbControllerTest() {
         dbCon = mock(DbController.class);
@@ -43,7 +45,7 @@ public class DbControllerTest {
 
     @Test
     public void testGetMysqlConnection() throws SQLException {
-        Connection con = mock(Connection.class);
+        con = mock(Connection.class);
         when(dbCon.getMysqlConnection()).thenReturn(con);
         
         Connection mysql = dbCon.getMysqlConnection();
@@ -52,7 +54,7 @@ public class DbControllerTest {
     
     @Test
     public void testGetNeo4jDriver() {
-        Session session = mock(Session.class);
+        session = mock(Session.class);
         when(dbCon.getNeo4jSession()).thenReturn(session);
         
         Session neo4j = dbCon.getNeo4jSession();
