@@ -46,9 +46,9 @@ public class DbControllerTest {
     @Test
     public void testGetMysqlConnection() throws SQLException {
         con = mock(Connection.class);
-        when(dbCon.getMysqlConnection()).thenReturn(con);
+        when(dbCon.getMysqlConnection("jdbc:mysql://localhost:3306/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC")).thenReturn(con);
         
-        Connection mysql = dbCon.getMysqlConnection();
+        Connection mysql = dbCon.getMysqlConnection("jdbc:mysql://localhost:3306/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
         assertNotNull(mysql);
     }
     

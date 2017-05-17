@@ -27,8 +27,12 @@ public class DbController {
     private static final String NEO4J_USER = "neo4j";
     private static final String NEO4J_PASS = "class";
     
-    public Connection getMysqlConnection() throws SQLException {        
-        return DriverManager.getConnection(DRIVER_MYSQL, MYSQL_USER, MYSQL_PASS);
+    public Connection getMysqlConnection(String driver) throws SQLException { 
+        try {
+            return DriverManager.getConnection(driver, MYSQL_USER, MYSQL_PASS);
+        } catch (Exception e) {
+        }
+        return null;
     }
     
     public Session getNeo4jSession() {
