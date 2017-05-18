@@ -1,7 +1,3 @@
-DROP DATABASE IF EXISTS `gutenberg_test`;
-
-CREATE SCHEMA `gutenberg_test` DEFAULT CHARACTER SET utf8 ;
-
 CREATE TABLE `gutenberg_test`.`Books` (
   `ID` INT NOT NULL AUTO_INCREMENT,
   `Name` VARCHAR(6000) NOT NULL,
