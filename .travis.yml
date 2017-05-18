@@ -3,4 +3,4 @@ sudo: false # faster builds
 services:
  - mysql
 before_install:
- - mysql -u root --default-character-set=utf8 gutenberg_test < CreateGutenbergTest.sql --stacktrace
+ - mysql -e CreateGutenbergTest.sql
