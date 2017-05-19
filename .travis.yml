@@ -1,6 +1,6 @@
 language: java
-sudo: required # faster builds
+sudo: false # faster builds
 services:
  - mysql
-before_install:
+before_script:
  - mysql -u root --default-character-set=utf8 gutenberg_test < CreateGutenbergTest.sql
