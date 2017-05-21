@@ -5,6 +5,7 @@
  */
 package com.databasserne.repo.implementation;
 
+import com.databasserne.config.DatabaseEnv;
 import com.databasserne.controllers.DbController;
 import com.databasserne.repo.interfaces.IBooksRepo;
 import com.databasserne.models.*;
@@ -22,14 +23,16 @@ import java.util.List;
  */
 public class MysqlBooksRepo implements IBooksRepo {
 
+    private DatabaseEnv env;
     private DbController dbCon;
     private Connection con;
     private PreparedStatement stmt;
     private ResultSet result;
     
     public MysqlBooksRepo(String driver) throws SQLException {
+        env = new DatabaseEnv();
         dbCon = new DbController();
-        this.con = dbCon.getMysqlConnection(driver);
+        this.con = dbCon.getMysqlConnection(driver, env.env("db.username"), env.env("db.password"));
     }
     
     public List<Book> getAll() {

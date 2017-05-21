@@ -5,6 +5,7 @@
  */
 package com.databasserne.repo.implementation;
 
+import com.databasserne.config.DatabaseEnv;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;

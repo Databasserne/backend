@@ -2,6 +2,8 @@ language: java
 sudo: false # faster builds
 jdk:
  - oraclejdk8
+env:
+ - CI=true
 services:
  - mysql
 before_script:
