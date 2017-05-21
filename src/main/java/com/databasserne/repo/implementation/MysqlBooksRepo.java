@@ -32,6 +32,21 @@ public class MysqlBooksRepo implements IBooksRepo {
         this.con = dbCon.getMysqlConnection(driver);
     }
     
+    public List<Book> getAll() {
+        List<Book> books = new ArrayList<>();
+        try {
+            stmt = con.prepareStatement("SELECT Books.Name AS Book FROM Books");
+            result = stmt.executeQuery();
+            while(result.next()) {
+                Book b = new Book(result.getString("Book"));
+                books.add(b);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return books;
+    }
+    
     @Override
     public List<Book> getBooksAndAuthorFromCity(String city) {
         List<Book> books = new ArrayList<>();

@@ -52,6 +52,14 @@ public class MysqlBooksRepoTest {
     }
 
     @Test
+    public void getAllBoksTest() throws SQLException {
+        booksRepo = new MysqlBooksRepo("jdbc:mysql://127.0.0.1/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+        List<Book> books = booksRepo.getAll();
+        
+        assertThat(books, not(IsEmptyCollection.empty()));
+    }
+    
+    @Test
     public void getBooksAndAuthorFromCityTest() throws SQLException {
         booksRepo = new MysqlBooksRepo("jdbc:mysql://127.0.0.1/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
         List<Book> books = booksRepo.getBooksAndAuthorFromCity("Florence");
