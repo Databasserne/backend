@@ -61,10 +61,4 @@ public class DbControllerTest {
         assertNotNull(neo4j);
     }
     
-    @Test
-    public void testEstablishMysqlConnection() throws SQLException {
-        con = dbCon.getMysqlConnection("jdbc:mysql://localhost:3306/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
-        assertNotNull(con);
-    }
-    
 }
