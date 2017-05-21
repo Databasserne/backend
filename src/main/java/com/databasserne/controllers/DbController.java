@@ -22,7 +22,7 @@ public class DbController {
     private static final String DRIVER_MYSQL = "jdbc:mysql://localhost:3306/";
     private static final String DRIVER_NEO4J = "bolt://localhost:7687";
     
-    private static final String MYSQL_USER = "travis";
+    private static final String MYSQL_USER = "root";
     private static final String MYSQL_PASS = "";
     private static final String NEO4J_USER = "neo4j";
     private static final String NEO4J_PASS = "class";
