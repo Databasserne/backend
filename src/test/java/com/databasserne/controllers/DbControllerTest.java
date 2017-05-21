@@ -1,5 +1,6 @@
 package com.databasserne.controllers;
 
+import com.databasserne.config.DatabaseEnv;
 import java.sql.Connection;
 import java.sql.SQLException;
 import static org.hamcrest.CoreMatchers.is;
@@ -19,6 +20,7 @@ import org.neo4j.driver.v1.Session;
  */
 public class DbControllerTest {
     
+    private DatabaseEnv env;
     private DbController dbCon;
     private Connection con;
     private Session session;
@@ -45,10 +47,15 @@ public class DbControllerTest {
 
     @Test
     public void testGetMysqlConnection() throws SQLException {
+        env = new DatabaseEnv();
         con = mock(Connection.class);
-        when(dbCon.getMysqlConnection("jdbc:mysql://localhost:3306/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC")).thenReturn(con);
+        when(dbCon.getMysqlConnection("jdbc:mysql://localhost:3306/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+                env.env("db.username"),
+                env.env("db.password"))).thenReturn(con);
         
-        Connection mysql = dbCon.getMysqlConnection("jdbc:mysql://localhost:3306/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+        Connection mysql = dbCon.getMysqlConnection("jdbc:mysql://localhost:3306/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+                env.env("db.username"),
+                env.env("db.password"));
         assertNotNull(mysql);
     }
     

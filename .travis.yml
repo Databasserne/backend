@@ -1,2 +1,13 @@
 language: java
 sudo: false # faster builds
+jdk:
+ - oraclejdk8
+env:
+ - CI=true
+services:
+ - mysql
+before_script:
+ - sh -c "mysql -e 'DROP DATABASE IF EXISTS gutenberg_test;'"
+ - sh -c "mysql -e 'CREATE DATABASE IF NOT EXISTS gutenberg_test;'"
+ - sh -c "mysql -u root --default-character-set=utf8 gutenberg_test < CreateGutenbergTest.sql"
+ - sh -c "mysql -u root --default-character-set=utf8 gutenberg_test < TestData.sql"

@@ -5,6 +5,7 @@
  */
 package com.databasserne.controllers;
 
+import com.databasserne.config.DatabaseEnv;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,18 +20,22 @@ import org.neo4j.driver.v1.Session;
  */
 public class DbController {
     
+    private DatabaseEnv env;
     private static final String DRIVER_MYSQL = "jdbc:mysql://localhost:3306/";
     private static final String DRIVER_NEO4J = "bolt://localhost:7687";
     
     private static final String MYSQL_USER = "root";
-    private static final String MYSQL_PASS = "123456";
+    private static final String MYSQL_PASS = "mk101593";
     private static final String NEO4J_USER = "neo4j";
     private static final String NEO4J_PASS = "class";
     
-    public Connection getMysqlConnection(String driver) throws SQLException { 
+    public Connection getMysqlConnection(String driver, String user, String password) throws SQLException { 
         try {
-            return DriverManager.getConnection(driver, MYSQL_USER, MYSQL_PASS);
+            String sqlDriver = new DatabaseEnv().env("db.driverClass");
+            Class.forName(sqlDriver).newInstance();
+            return DriverManager.getConnection(driver, user, password);
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
