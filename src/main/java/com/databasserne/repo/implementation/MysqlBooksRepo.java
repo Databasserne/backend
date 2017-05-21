@@ -36,12 +36,12 @@ public class MysqlBooksRepo implements IBooksRepo {
     public List<Book> getBooksAndAuthorFromCity(String city) {
         List<Book> books = new ArrayList<>();
         try {
-            stmt = con.prepareStatement("SELECT authors.Name AS Author, books.Name AS Book from books "
-                                        + "JOIN books_authors ON books_authors.Book_ID = books.ID "
-                                        + "JOIN authors ON authors.ID = books_authors.Author_ID "
-                                        + "JOIN books_cities ON books_cities.Book_ID = books.ID "
-                                        + "JOIN cities ON cities.ID = books_cities.City_ID "
-                                        + "WHERE cities.Name = \""+city+"\";");
+            stmt = con.prepareStatement("SELECT Authors.Name AS Author, Books.Name AS Book from Books "
+                                        + "JOIN Books_Authors ON Books_Authors.Book_ID = Books.ID "
+                                        + "JOIN Authors ON Authors.ID = Books_Authors.Author_ID "
+                                        + "JOIN Books_Cities ON Books_Cities.Book_ID = Books.ID "
+                                        + "JOIN Cities ON Cities.ID = Books_Cities.City_ID "
+                                        + "WHERE Cities.Name = \""+city+"\";");
             result = stmt.executeQuery();
             while(result.next()) {
                 Book b = new Book(result.getString("Book"));
