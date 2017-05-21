@@ -63,7 +63,7 @@ public class DbControllerTest {
     
     @Test
     public void testEstablishMysqlConnection() throws SQLException {
-        con = dbCon.getMysqlConnection("jdbc:mysql://localhost:3306/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+        con = dbCon.getMysqlConnection("jdbc:mysql://127.0.0.1/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
         assertNotNull(con);
     }
     
