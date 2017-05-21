@@ -54,6 +54,10 @@ public class MysqlBooksRepoTest {
         booksRepo = new MysqlBooksRepo("jdbc:mysql://127.0.0.1/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
         List<Book> books = booksRepo.getBooksAndAuthorFromCity("Florence");
         
+        for (Book book : books) {
+            System.out.println("Book: " + book.getName());
+        }
+        
         assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("The Complete Works of William Shakespeare"))));
         assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("La Fiammetta"))));
     }
