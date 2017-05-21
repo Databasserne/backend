@@ -29,6 +29,7 @@ public class DbController {
     
     public Connection getMysqlConnection(String driver) throws SQLException { 
         try {
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
             return DriverManager.getConnection(driver, MYSQL_USER, MYSQL_PASS);
         } catch (Exception e) {
             e.printStackTrace();
