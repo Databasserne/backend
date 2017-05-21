@@ -9,4 +9,4 @@ before_script:
  - sh -c "mysql -e 'CREATE DATABASE IF NOT EXISTS gutenberg_test;'"
  - sh -c "mysql -u root --default-character-set=utf8 gutenberg_test < CreateGutenbergTest.sql"
  - sh -c "mysql -u root --default-character-set=utf8 gutenberg_test < TestData.sql"
- - sh -c "mysql -e 'INSERT INTO gutenberg_test.Books(name) VALUES(\"Test book\")"
+ - sh -c "mysql -e 'INSERT INTO gutenberg_test.Books(name) VALUES(\"Test book\");'"
