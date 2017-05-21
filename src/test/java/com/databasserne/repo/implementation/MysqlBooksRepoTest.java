@@ -51,7 +51,7 @@ public class MysqlBooksRepoTest {
 
     @Test
     public void getBooksAndAuthorFromCityTest() throws SQLException {
-        booksRepo = new MysqlBooksRepo("jdbc:mysql://localhost:3306/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+        booksRepo = new MysqlBooksRepo("jdbc:mysql://127.0.0.1/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
         List<Book> books = booksRepo.getBooksAndAuthorFromCity("Florence");
         
         assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("The Complete Works of William Shakespeare"))));
@@ -60,7 +60,7 @@ public class MysqlBooksRepoTest {
     
     @Test
     public void getBooksAndAuthorFromIllegalCityTest() throws SQLException {
-        booksRepo = new MysqlBooksRepo("jdbc:mysql://localhost:3306/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+        booksRepo = new MysqlBooksRepo("jdbc:mysql://127.0.0.1/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
         List<Book> books = booksRepo.getBooksAndAuthorFromCity("Vrøvl");
         
         assertThat(books, is(empty()));
