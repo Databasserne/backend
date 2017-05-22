@@ -4,7 +4,6 @@ jdk:
  - oraclejdk8
 env:
  - CI=true
- - NEO4J_VERSION="2.1.7"
 services:
  - mysql
 before_script:
