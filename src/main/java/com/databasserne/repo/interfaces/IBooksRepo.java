@@ -7,6 +7,7 @@ package com.databasserne.repo.interfaces;
 
 import com.databasserne.models.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -15,4 +16,5 @@ import java.util.List;
 public interface IBooksRepo {
     List<Book> getBooksAndAuthorFromCity(String city);
     List<City> getCitiesFromBookTitle(String bookTitle);
+    Map<Book, List<City>> getBooksWithCitiesFromAuthor(String author);
 }

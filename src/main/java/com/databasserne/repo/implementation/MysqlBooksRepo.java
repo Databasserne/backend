@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -91,9 +92,9 @@ public class MysqlBooksRepo implements IBooksRepo {
             return cities;
         }
     }
-    
-    
-    public static void main(String[] args) throws SQLException {
-        new MysqlBooksRepo().getCitiesFromBookTitle("La Fiammetta");
+
+    @Override
+    public Map<Book, List<City>> getBooksWithCitiesFromAuthor(String author) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -15,14 +15,15 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import com.databasserne.models.*;
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.Map;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import org.hamcrest.Matchers;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasEntry;
 import org.hamcrest.collection.IsEmptyCollection;
+import org.hamcrest.collection.IsMapContaining;
 
 /**
  *
@@ -100,5 +101,22 @@ public class MysqlBooksRepoTest {
         List<City>  cities = booksRepo.getCitiesFromBookTitle("Nonexistent");
         
         assertThat(cities, is(empty()));
+    }
+    
+    @Test
+    public void getBooksWithCitiesFromAuthorTest() throws SQLException {
+        booksRepo = new MysqlBooksRepo();
+        Map<Book, List<City>> books = booksRepo.getBooksWithCitiesFromAuthor("Shakespeare");
+        
+        assertTrue(!books.isEmpty());
+        assertThat(books, IsMapContaining.hasKey(Matchers.<Book>hasProperty("name", is("Test"))));
+    }
+    
+    @Test
+    public void getBooksWithCitiesFromIllegalAuthorTest() throws SQLException {
+        booksRepo = new MysqlBooksRepo();
+        Map<Book, List<City>> books = booksRepo.getBooksWithCitiesFromAuthor("hahahaha");
+        
+        assertTrue(books.isEmpty());
     }
 }
