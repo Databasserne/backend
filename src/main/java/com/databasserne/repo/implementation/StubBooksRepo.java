@@ -26,5 +26,15 @@ public class StubBooksRepo implements IBooksRepo {
         
         return books;
     }
+
+    @Override
+    public List<City> getCitiesFromBookTitle(String bookTitle) {
+        
+        List<City> cities = new ArrayList<City>();
+        City city = new City("Lyngby", 1.23456F, 5.42362F);
+        cities.add(city);
+        
+        return cities;
+    }
     
 }

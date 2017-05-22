@@ -14,4 +14,5 @@ import java.util.List;
  */
 public interface IBooksRepo {
     List<Book> getBooksAndAuthorFromCity(String city);
+    List<City> getCitiesFromBookTitle(String bookTitle);
 }

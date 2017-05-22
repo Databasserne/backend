@@ -53,7 +53,7 @@ public class MysqlBooksRepo implements IBooksRepo {
     public List<Book> getBooksAndAuthorFromCity(String city) {
         List<Book> books = new ArrayList<>();
         try {
-            stmt = con.prepareStatement("SELECT Authors.Name AS Author, Books.Name AS Book from Books "
+            stmt = con.prepareStatement("SELECT DISTINCT Authors.Name AS Author, Books.Name AS Book from Books "
                                         + "JOIN Books_Authors ON Books_Authors.Book_ID = Books.ID "
                                         + "JOIN Authors ON Authors.ID = Books_Authors.Author_ID "
                                         + "JOIN Books_Cities ON Books_Cities.Book_ID = Books.ID "
@@ -67,9 +67,33 @@ public class MysqlBooksRepo implements IBooksRepo {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            return books;
         }
-        
-        return books;
+    }
+
+    @Override
+    public List<City> getCitiesFromBookTitle(String bookTitle) {
+        List<City> cities = new ArrayList<>();
+        try {
+            stmt = con.prepareStatement("SELECT Cities.Name, Cities.Geolat, Cities.Geolng FROM Cities "
+                                        + "JOIN Books_Cities ON Books_Cities.City_ID = Cities.ID "
+                                        + "JOIN Books ON Books.ID = Books_Cities.Book_ID "
+                                        + "WHERE Books.Name = \""+bookTitle+"\";");
+            result = stmt.executeQuery();
+            while(result.next()) {
+                City city = new City(result.getString("Cities.Name"), result.getFloat("Cities.Geolat"), result.getFloat("Cities.Geolng"));
+                cities.add(city);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            return cities;
+        }
     }
     
+    
+    public static void main(String[] args) throws SQLException {
+        new MysqlBooksRepo().getCitiesFromBookTitle("La Fiammetta");
+    }
 }
