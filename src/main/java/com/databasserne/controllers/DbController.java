@@ -31,6 +31,9 @@ public class DbController {
     
     public Connection getMysqlConnection(String driver, String user, String password) throws SQLException { 
         try {
+            System.out.println("Driver: " + driver);
+            System.out.println("User: " + user);
+            System.out.println("Pass: " + password);
             String sqlDriver = new DatabaseEnv().env("db.driverClass");
             Class.forName(sqlDriver).newInstance();
             return DriverManager.getConnection(driver, user, password);

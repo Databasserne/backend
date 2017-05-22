@@ -5,11 +5,8 @@
  */
 package com.databasserne.config;
 
-import com.databasserne.config.interfaces.IDatabaseEnv;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -23,6 +20,9 @@ public class DatabaseEnv {
 
     private InputStream input;
     private Properties prop = new Properties();
+    
+    public DatabaseEnv() {
+    }
     
     public String env(String key) {
         try {

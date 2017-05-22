@@ -54,7 +54,7 @@ public class MysqlBooksRepoTest {
 
     @Test
     public void getAllBoksTest() throws SQLException {
-        booksRepo = new MysqlBooksRepo("jdbc:mysql://127.0.0.1/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+        booksRepo = new MysqlBooksRepo();
         List<Book> books = booksRepo.getAll();
         
         assertThat(books, not(IsEmptyCollection.empty()));
@@ -62,17 +62,20 @@ public class MysqlBooksRepoTest {
     
     @Test
     public void getBooksAndAuthorFromCityTest() throws SQLException {
-        booksRepo = new MysqlBooksRepo("jdbc:mysql://127.0.0.1/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+        booksRepo = new MysqlBooksRepo();
         List<Book> books = booksRepo.getBooksAndAuthorFromCity("Florence");
         
         assertThat(books, not(IsEmptyCollection.empty()));
         assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("The Complete Works of William Shakespeare"))));
         assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("La Fiammetta"))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("Divine Comedy, Longfellow's Translation, Hell"))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("A Beautiful Possibility"))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("The Mystery of the Boule Cabinet: A Detective Story"))));
     }
     
     @Test
     public void getBooksAndAuthorFromIllegalCityTest() throws SQLException {
-        booksRepo = new MysqlBooksRepo("jdbc:mysql://127.0.0.1/gutenberg_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+        booksRepo = new MysqlBooksRepo();
         List<Book> books = booksRepo.getBooksAndAuthorFromCity("Vrøvl");
         
         assertThat(books, is(empty()));

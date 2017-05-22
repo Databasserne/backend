@@ -10,7 +10,6 @@ import com.databasserne.controllers.DbController;
 import com.databasserne.repo.interfaces.IBooksRepo;
 import com.databasserne.models.*;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,10 +28,10 @@ public class MysqlBooksRepo implements IBooksRepo {
     private PreparedStatement stmt;
     private ResultSet result;
     
-    public MysqlBooksRepo(String driver) throws SQLException {
+    public MysqlBooksRepo() throws SQLException {
         env = new DatabaseEnv();
         dbCon = new DbController();
-        this.con = dbCon.getMysqlConnection(driver, env.env("db.username"), env.env("db.password"));
+        this.con = dbCon.getMysqlConnection(env.env("db.connectionUrl"), env.env("db.username"), env.env("db.password"));
     }
     
     public List<Book> getAll() {

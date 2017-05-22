@@ -5,10 +5,12 @@
  */
 package com.databasserne.resources;
 
+import com.databasserne.repo.implementation.MysqlBooksRepo;
 import com.databasserne.repo.implementation.StubBooksRepo;
 import com.databasserne.repo.interfaces.IBooksRepo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.sql.SQLException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -37,8 +39,9 @@ public class MysqlResource {
     /**
      * Creates a new instance of MysqlResource
      */
-    public MysqlResource() {
-        booksRepo = new StubBooksRepo();
+    public MysqlResource() throws SQLException {
+        //booksRepo = new StubBooksRepo();
+        booksRepo = new MysqlBooksRepo();
     }
 
     @GET
