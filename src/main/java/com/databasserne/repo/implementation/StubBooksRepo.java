@@ -9,6 +9,7 @@ import com.databasserne.repo.interfaces.IBooksRepo;
 import com.databasserne.models.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -35,6 +36,11 @@ public class StubBooksRepo implements IBooksRepo {
         cities.add(city);
         
         return cities;
+    }
+
+    @Override
+    public Map<Book, List<City>> getBooksWithCitiesFromAuthor(String author) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

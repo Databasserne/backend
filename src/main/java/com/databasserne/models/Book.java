@@ -35,4 +35,15 @@ public class Book {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Book)) {
+            return false;
+        }
+        Book b = (Book) obj;
+        return b.name.equals(this.name);
+    }
+    
+    
 }

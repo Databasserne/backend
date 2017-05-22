@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -95,6 +96,31 @@ public class MysqlBooksRepo implements IBooksRepo {
 
     @Override
     public Map<Book, List<City>> getBooksWithCitiesFromAuthor(String author) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Map<Book, List<City>> books = new HashMap<>();
+        try {
+            stmt = con.prepareStatement("SELECT DISTINCT Books.Name, Cities.Name, Cities.Geolat, Cities.Geolng FROM Cities "
+                                        + "JOIN Books_Cities ON Books_Cities.City_ID = Cities.ID "
+                                        + "JOIN Books ON Books.ID = Books_Cities.Book_ID "
+                                        + "WHERE Books.ID IN (SELECT Books.ID FROM Books "
+                                        + "JOIN Books_Authors ON Books_Authors.Book_ID = Books.ID "
+                                        + "JOIN Authors ON Authors.ID = Books_Authors.Author_ID "
+                                        + "WHERE Authors.Name = \""+author+"\");");
+            result = stmt.executeQuery();
+            while(result.next()) {
+                Book b = new Book(result.getString("Books.Name"));
+                final City city = new City(result.getString("Cities.Name"), result.getFloat("Cities.Geolat"), result.getFloat("Cities.Geolng"));
+                if(books.containsKey(b)) {
+                    books.get(b).add(city);
+                } else {
+                    books.put(b, new ArrayList<City>(){{
+                        add(city);
+                    }});
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return books;
+        }
     }
 }

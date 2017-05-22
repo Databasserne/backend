@@ -106,10 +106,10 @@ public class MysqlBooksRepoTest {
     @Test
     public void getBooksWithCitiesFromAuthorTest() throws SQLException {
         booksRepo = new MysqlBooksRepo();
-        Map<Book, List<City>> books = booksRepo.getBooksWithCitiesFromAuthor("Shakespeare");
+        Map<Book, List<City>> books = booksRepo.getBooksWithCitiesFromAuthor("Unknown");
         
         assertTrue(!books.isEmpty());
-        assertThat(books, IsMapContaining.hasKey(Matchers.<Book>hasProperty("name", is("Test"))));
+        assertThat(books, IsMapContaining.hasKey(Matchers.<Book>hasProperty("name", is("The King James Version of the Bible"))));
     }
     
     @Test

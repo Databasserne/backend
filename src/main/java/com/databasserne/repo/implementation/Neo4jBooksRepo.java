@@ -8,6 +8,7 @@ package com.databasserne.repo.implementation;
 import com.databasserne.repo.interfaces.IBooksRepo;
 import com.databasserne.models.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -22,6 +23,11 @@ public class Neo4jBooksRepo implements IBooksRepo {
 
     @Override
     public List<City> getCitiesFromBookTitle(String bookTitle) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Map<Book, List<City>> getBooksWithCitiesFromAuthor(String author) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
