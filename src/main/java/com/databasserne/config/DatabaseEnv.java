@@ -5,6 +5,7 @@
  */
 package com.databasserne.config;
 
+import com.databasserne.config.interfaces.IEnvironment;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author Vixo
  */
-public class DatabaseEnv {
+public class DatabaseEnv implements IEnvironment {
 
     private InputStream input;
     private Properties prop = new Properties();
@@ -24,6 +25,7 @@ public class DatabaseEnv {
     public DatabaseEnv() {
     }
     
+    @Override
     public String env(String key) {
         try {
             String filename = null;

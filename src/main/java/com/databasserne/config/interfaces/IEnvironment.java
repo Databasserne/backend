@@ -9,9 +9,6 @@ package com.databasserne.config.interfaces;
  *
  * @author Vixo
  */
-public interface IDatabaseEnv {
+public interface IEnvironment {
     String env(String key);
-    String driver();
-    String user();
-    String password();
 }
