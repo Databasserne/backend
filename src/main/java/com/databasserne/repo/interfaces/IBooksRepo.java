@@ -17,4 +17,5 @@ public interface IBooksRepo {
     List<Book> getBooksAndAuthorFromCity(String city);
     List<City> getCitiesFromBookTitle(String bookTitle);
     Map<Book, List<City>> getBooksWithCitiesFromAuthor(String author);
+    List<Book> getBooksMentioningNearbyCity(float lat, float lng, float distance);
 }
