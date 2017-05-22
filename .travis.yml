@@ -4,10 +4,18 @@ jdk:
  - oraclejdk8
 env:
  - CI=true
+ - NEO4J_VERSION="2.1.7"
 services:
  - mysql
+ - neo4j
 before_script:
  - sh -c "mysql -e 'DROP DATABASE IF EXISTS gutenberg_test;'"
  - sh -c "mysql -e 'CREATE DATABASE IF NOT EXISTS gutenberg_test;'"
  - sh -c "mysql -u root --default-character-set=utf8 gutenberg_test < CreateGutenbergTest.sql"
  - sh -c "mysql -u root --default-character-set=utf8 gutenberg_test < TestData.sql"
+# install Neo4j locally:
+ - wget dist.neo4j.org/neo4j-community-$NEO4J_VERSION-unix.tar.gz
+ - tar -xzf neo4j-community-$NEO4J_VERSION-unix.tar.gz
+ - NEO4J_VERSION=$NEO4J_VERSION ./bin/disable_auth
+ - neo4j-community-$NEO4J_VERSION/bin/neo4j start
+ - neo4j-community-$NEO4J_VERSION/bin/neo4j-shell -file neo4jData.cql
