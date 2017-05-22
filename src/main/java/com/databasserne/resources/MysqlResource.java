@@ -95,4 +95,11 @@ public class MysqlResource {
         
         return Response.status(Response.Status.OK).entity(gson.toJson(response)).build();
     }
+    
+    @GET
+    @Path("location/{geolat}/{geolng}")
+    @Produces("application/json")
+    public Response searchBooksWithCityNearby(@PathParam("geolat") float geolat, @PathParam("geolng") float geolng) {
+        return Response.status(Response.Status.OK).entity(gson.toJson(booksRepo.getBooksMentioningNearbyCity(geolat, geolng, 25))).build();
+    }
 }

@@ -119,4 +119,25 @@ public class MysqlBooksRepoTest {
         
         assertTrue(books.isEmpty());
     }
+    
+    @Test
+    public void getBooksFromCityNearbyTest() throws SQLException {
+        booksRepo = new MysqlBooksRepo();
+        List<Book> books = booksRepo.getBooksMentioningNearbyCity(37, -122, 25);
+        
+        assertThat(books, not(IsEmptyCollection.empty()));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("Punchinello, Volume 1, No. 26, September 24, 1870"))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("Punchinello, Volume 1, No. 19, August 6, 1870"))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("The Father of British Canada: a Chronicle of Carleton"))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("Beneath the Banner: Being Narratives of Noble Lives and Brave Deeds"))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("Salute to Adventurers"))));
+    }
+    
+    @Test
+    public void getBooksFromCityNotNearbyTest() throws SQLException {
+        booksRepo = new MysqlBooksRepo();
+        List<Book> books = booksRepo.getBooksMentioningNearbyCity(0, 0, 1);
+        
+        assertThat(books, is(empty()));
+    }
 }

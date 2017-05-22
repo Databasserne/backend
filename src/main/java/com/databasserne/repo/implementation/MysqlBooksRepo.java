@@ -123,4 +123,27 @@ public class MysqlBooksRepo implements IBooksRepo {
             return books;
         }
     }
+
+    @Override
+    public List<Book> getBooksMentioningNearbyCity(float lat, float lng, float distance) {
+        List<Book> books = new ArrayList<>();
+        try {
+            stmt = con.prepareStatement("SELECT Books.Name, ( 3959 * acos( cos( radians("+lat+") ) * cos( radians( geolat ) ) "
+                                        + "* cos( radians( geolng ) - radians("+lng+") ) + sin( radians("+lat+") ) * sin(radians(geolat)) ) ) AS Distance "
+                                        + "FROM Books " 
+                                        + "JOIN Books_Cities ON Books_Cities.Book_ID = Books.ID "
+                                        + "JOIN Cities on Cities.ID = Books_Cities.City_ID "
+                                        + "HAVING Distance < "+distance+" "
+                                        + "ORDER BY Distance;");
+            result = stmt.executeQuery();
+            while(result.next()) {
+                Book b = new Book(result.getString("Books.Name"));
+                books.add(b);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return books;
+        }
+    }
 }
