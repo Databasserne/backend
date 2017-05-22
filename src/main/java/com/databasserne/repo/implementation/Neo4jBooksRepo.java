@@ -19,5 +19,10 @@ public class Neo4jBooksRepo implements IBooksRepo {
     public List<Book> getBooksAndAuthorFromCity(String city) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public List<City> getCitiesFromBookTitle(String bookTitle) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

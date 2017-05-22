@@ -80,4 +80,25 @@ public class MysqlBooksRepoTest {
         
         assertThat(books, is(empty()));
     }
+    
+    @Test
+    public void getCitiesFromBookTitleTest() throws SQLException {
+        booksRepo = new MysqlBooksRepo();
+        List<City> cities = booksRepo.getCitiesFromBookTitle("La Fiammetta");
+        
+        assertThat(cities, not(IsEmptyCollection.empty()));
+        assertThat(cities, hasItem(Matchers.<City>hasProperty("name", is("Venice"))));
+        assertThat(cities, hasItem(Matchers.<City>hasProperty("name", is("Florence"))));
+        assertThat(cities, hasItem(Matchers.<City>hasProperty("name", is("Naples"))));
+        assertThat(cities, hasItem(Matchers.<City>hasProperty("name", is("Paris"))));
+        assertThat(cities, hasItem(Matchers.<City>hasProperty("name", is("King"))));
+    }
+    
+    @Test
+    public void getCitiesFromIllegalBookTest() throws SQLException {
+        booksRepo = new MysqlBooksRepo();
+        List<City>  cities = booksRepo.getCitiesFromBookTitle("Nonexistent");
+        
+        assertThat(cities, is(empty()));
+    }
 }
