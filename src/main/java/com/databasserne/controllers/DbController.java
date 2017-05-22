@@ -20,20 +20,8 @@ import org.neo4j.driver.v1.Session;
  */
 public class DbController {
     
-    private DatabaseEnv env;
-    private static final String DRIVER_MYSQL = "jdbc:mysql://localhost:3306/";
-    private static final String DRIVER_NEO4J = "bolt://localhost:7687";
-    
-    private static final String MYSQL_USER = "root";
-    private static final String MYSQL_PASS = "mk101593";
-    private static final String NEO4J_USER = "neo4j";
-    private static final String NEO4J_PASS = "class";
-    
     public Connection getMysqlConnection(String driver, String user, String password) throws SQLException { 
         try {
-            System.out.println("Driver: " + driver);
-            System.out.println("User: " + user);
-            System.out.println("Pass: " + password);
             String sqlDriver = new DatabaseEnv().env("db.driverClass");
             Class.forName(sqlDriver).newInstance();
             return DriverManager.getConnection(driver, user, password);
@@ -43,10 +31,11 @@ public class DbController {
         return null;
     }
     
-    public Session getNeo4jSession() {
+    public Session getNeo4jSession(String username, String password) {
+        String neo4jDriver = new DatabaseEnv().env("neo4j.connectionUrl");
         Driver driver = GraphDatabase.driver( 
-                "bolt://localhost:7687", 
-                AuthTokens.basic(NEO4J_USER, NEO4J_PASS));
+                neo4jDriver, 
+                AuthTokens.basic(username, password));
         
         return driver.session();
     }

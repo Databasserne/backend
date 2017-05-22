@@ -62,9 +62,13 @@ public class DbControllerTest {
     @Test
     public void testGetNeo4jDriver() {
         session = mock(Session.class);
-        when(dbCon.getNeo4jSession()).thenReturn(session);
+        when(dbCon.getNeo4jSession(
+                env.env("neo4j.username"),
+                env.env("neo4j.password"))).thenReturn(session);
         
-        Session neo4j = dbCon.getNeo4jSession();
+        Session neo4j = dbCon.getNeo4jSession(
+                env.env("neo4j.username"),
+                env.env("neo4j.password"));
         assertNotNull(neo4j);
     }
     
