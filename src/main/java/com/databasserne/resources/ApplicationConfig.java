@@ -27,6 +27,7 @@ public class ApplicationConfig extends Application {
 
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(com.databasserne.resources.MysqlResource.class);
+        resources.add(com.databasserne.resources.Neo4jResource.class);
     }
     
 }
