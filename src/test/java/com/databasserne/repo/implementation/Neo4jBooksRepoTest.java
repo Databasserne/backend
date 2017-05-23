@@ -9,6 +9,7 @@ import com.databasserne.config.DatabaseEnv;
 import com.databasserne.controllers.DbController;
 import com.databasserne.models.Author;
 import com.databasserne.models.Book;
+import com.databasserne.models.City;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -149,5 +150,54 @@ public class Neo4jBooksRepoTest {
         List<Book> books = booksRepo.getBooksAndAuthorFromCity(city);
         
         assertThat(books, is(empty()));
+    }
+    
+    @Test
+    public void getCitiesFromBookTitleTest() {
+        DatabaseEnv env = new DatabaseEnv();
+        DbController dbCon = mock(DbController.class);
+        Session session = mock(Session.class);
+        StatementResult result = mock(StatementResult.class);
+        Record rec = mock(Record.class);
+        Value val = mock(Value.class);
+        Value latVal = mock(Value.class);
+        Value lngVal = mock(Value.class);
+        String book = "La Fiammetta";
+        
+        when(dbCon.getNeo4jSession(
+                env.env("neo4j.username"),
+                env.env("neo4j.password"))).thenReturn(session);
+        
+        when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book) "
+                        + "WHERE b.name =~ \"(?i)"+book+"\" "
+                        + "RETURN DISTINCT c.name as City, c.Geolat as Geolat, c.Geolng as Geolng"))
+                .thenReturn(result);
+        when(result.hasNext())
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.FALSE);
+        when(result.next()).thenReturn(rec);
+        when(rec.get("Cities.Name")).thenReturn(val);
+        //when(rec.get("Cities.Geolat")).thenReturn(latVal);
+        //when(rec.get("Cities.Geolng")).thenReturn(lngVal);
+        when(val.asString())
+                .thenReturn("Venice")
+                .thenReturn("Florence")
+                .thenReturn("Naples")
+                .thenReturn("Paris")
+                .thenReturn("King");
+        
+        booksRepo = new Neo4jBooksRepo(dbCon);
+        List<City> cities = booksRepo.getCitiesFromBookTitle(book);
+                
+        assertThat(cities, not(IsEmptyCollection.empty()));
+        assertThat(cities, hasItem(Matchers.<City>hasProperty("name", is("Venice"))));
+        assertThat(cities, hasItem(Matchers.<City>hasProperty("name", is("Florence"))));
+        assertThat(cities, hasItem(Matchers.<City>hasProperty("name", is("Naples"))));
+        assertThat(cities, hasItem(Matchers.<City>hasProperty("name", is("Paris"))));
+        assertThat(cities, hasItem(Matchers.<City>hasProperty("name", is("King"))));
     }
 }
