@@ -61,7 +61,21 @@ public class Neo4jBooksRepo implements IBooksRepo {
 
     @Override
     public List<City> getCitiesFromBookTitle(String bookTitle) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<City> cities = new ArrayList<>();
+        try {
+            result = session.run("MATCH (c:City)<-[:Mentions]-(b:Book) "
+                                + "WHERE b.name =~ \"(?i)"+bookTitle+"\" "
+                                + "RETURN DISTINCT c.name as City, c.Geolat as Geolat, c.Geolng as Geolng");
+            while(result.hasNext()) {
+                rec = result.next();
+                
+                City city = new City(rec.get("City").asString(), rec.get("Geolat").asFloat(), rec.get("Geolng").asFloat());
+                cities.add(city);
+            }
+        } catch (Exception e) {
+        } finally {
+            return cities;
+        }
     }
 
     @Override

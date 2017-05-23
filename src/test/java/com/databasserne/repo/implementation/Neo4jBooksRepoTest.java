@@ -180,15 +180,17 @@ public class Neo4jBooksRepoTest {
                 .thenReturn(Boolean.TRUE)
                 .thenReturn(Boolean.FALSE);
         when(result.next()).thenReturn(rec);
-        when(rec.get("Cities.Name")).thenReturn(val);
-        //when(rec.get("Cities.Geolat")).thenReturn(latVal);
-        //when(rec.get("Cities.Geolng")).thenReturn(lngVal);
+        when(rec.get("City")).thenReturn(val);
+        when(rec.get("Geolat")).thenReturn(latVal);
+        when(rec.get("Geolng")).thenReturn(lngVal);
         when(val.asString())
                 .thenReturn("Venice")
                 .thenReturn("Florence")
                 .thenReturn("Naples")
                 .thenReturn("Paris")
                 .thenReturn("King");
+        when(latVal.asFloat()).thenReturn(1F); // If not returned then exception will be thrown.
+        when(lngVal.asFloat()).thenReturn(1F); // If not returned then exception will be thrown.
         
         booksRepo = new Neo4jBooksRepo(dbCon);
         List<City> cities = booksRepo.getCitiesFromBookTitle(book);
