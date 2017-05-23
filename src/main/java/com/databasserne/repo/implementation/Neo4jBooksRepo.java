@@ -68,11 +68,16 @@ public class Neo4jBooksRepo implements IBooksRepo {
                                 + "RETURN DISTINCT c.name as City, c.Geolat as Geolat, c.Geolng as Geolng");
             while(result.hasNext()) {
                 rec = result.next();
+                Double doubleLat = rec.get("Geolat").asDouble();
+                Double doubleLng = rec.get("Geolng").asDouble();
+                Float lat = doubleLat.floatValue();
+                Float lng = doubleLng.floatValue();
                 
-                City city = new City(rec.get("City").asString(), rec.get("Geolat").asFloat(), rec.get("Geolng").asFloat());
+                City city = new City(rec.get("City").asString(), lat, lng);
                 cities.add(city);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             return cities;
         }

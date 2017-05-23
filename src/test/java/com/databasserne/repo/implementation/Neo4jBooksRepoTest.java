@@ -189,8 +189,8 @@ public class Neo4jBooksRepoTest {
                 .thenReturn("Naples")
                 .thenReturn("Paris")
                 .thenReturn("King");
-        when(latVal.asFloat()).thenReturn(1F); // If not returned then exception will be thrown.
-        when(lngVal.asFloat()).thenReturn(1F); // If not returned then exception will be thrown.
+        when(latVal.asDouble()).thenReturn(1.0); // If not returned then exception will be thrown.
+        when(lngVal.asDouble()).thenReturn(1.0); // If not returned then exception will be thrown.
         
         booksRepo = new Neo4jBooksRepo(dbCon);
         List<City> cities = booksRepo.getCitiesFromBookTitle(book);
