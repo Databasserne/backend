@@ -5,6 +5,8 @@
  */
 package com.databasserne.repo.implementation;
 
+import com.databasserne.config.DatabaseEnv;
+import com.databasserne.controllers.DbController;
 import com.databasserne.models.Book;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,6 +25,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import org.neo4j.driver.v1.AuthTokens;
+import org.neo4j.driver.v1.Driver;
+import org.neo4j.driver.v1.GraphDatabase;
+import org.neo4j.driver.v1.Record;
+import org.neo4j.driver.v1.Session;
+import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.Value;
 
 /**
  *
@@ -53,18 +62,45 @@ public class Neo4jBooksRepoTest {
 
     @Test
     public void getBooksAndAuthorFromCityTest() {
-        booksRepo = mock(Neo4jBooksRepo.class);
-        List<Book> mockResult = new ArrayList<Book>() {{
-            add(new Book("The Complete Works of William Shakespeare"));
-            add(new Book("La Fiammetta"));
-            add(new Book("Divine Comedy, Longfellow's Translation, Hell"));
-            add(new Book("A Beautiful Possibility"));
-            add(new Book("The Mystery of the Boule Cabinet: A Detective Story"));
-        }};
+        DatabaseEnv env = new DatabaseEnv();
+        DbController dbCon = mock(DbController.class);
+        Session session = mock(Session.class);
+        StatementResult result = mock(StatementResult.class);
+        Record rec = mock(Record.class);
+        Value val = mock(Value.class);
+        Value aVal = mock(Value.class);
+        String city = "Florence";
         
-        when(booksRepo.getBooksAndAuthorFromCity("Florence")).thenReturn(mockResult);
+        when(dbCon.getNeo4jSession(
+                env.env("neo4j.username"),
+                env.env("neo4j.password"))).thenReturn(session);
         
-        List<Book> books = booksRepo.getBooksAndAuthorFromCity("Florence");
+        when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
+                        + "WHERE c.name =~ \"(?i)"+city+"\""
+                        + "RETURN DISTINCT b.name as Book, a.name as Author"))
+                .thenReturn(result);
+        when(result.hasNext())
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.FALSE);
+        when(result.next()).thenReturn(rec);
+        when(rec.get("Book")).thenReturn(val);
+        when(val.asString())
+                .thenReturn("The Complete Works of William Shakespeare")
+                .thenReturn("La Fiammetta")
+                .thenReturn("Divine Comedy, Longfellow's Translation, Hell")
+                .thenReturn("A Beautiful Possibility")
+                .thenReturn("The Mystery of the Boule Cabinet: A Detective Story");
+        when(rec.get("Author")).thenReturn(aVal);
+        when(aVal.asString())
+                .thenReturn("Shakespeare, William");
+        
+        booksRepo = new Neo4jBooksRepo(dbCon);
+        
+        List<Book> books = booksRepo.getBooksAndAuthorFromCity(city);
         
         assertThat(books, not(IsEmptyCollection.empty()));
         assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("The Complete Works of William Shakespeare"))));
@@ -76,8 +112,25 @@ public class Neo4jBooksRepoTest {
     
     @Test
     public void getBooksAndAuthorFromIllegalCityTest() throws SQLException {
-        booksRepo = new Neo4jBooksRepo();
-        List<Book> books = booksRepo.getBooksAndAuthorFromCity("Vrøvl");
+        DatabaseEnv env = new DatabaseEnv();
+        DbController dbCon = mock(DbController.class);
+        Session session = mock(Session.class);
+        StatementResult result = mock(StatementResult.class);
+        
+        String city = "Vrøvl";
+        when(dbCon.getNeo4jSession(
+                env.env("neo4j.username"),
+                env.env("neo4j.password"))).thenReturn(session);
+        
+        when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
+                        + "WHERE c.name =~ \"(?i)"+city+"\""
+                        + "RETURN DISTINCT b.name as Book, a.name as Author"))
+                .thenReturn(result);
+        when(result.hasNext())
+                .thenReturn(Boolean.FALSE);
+        
+        booksRepo = new Neo4jBooksRepo(dbCon);
+        List<Book> books = booksRepo.getBooksAndAuthorFromCity(city);
         
         assertThat(books, is(empty()));
     }

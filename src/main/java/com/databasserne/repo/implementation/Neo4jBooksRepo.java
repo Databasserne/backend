@@ -31,9 +31,9 @@ public class Neo4jBooksRepo implements IBooksRepo {
     private StatementResult result;
     private Record rec;
 
-    public Neo4jBooksRepo() {
+    public Neo4jBooksRepo(DbController dbCon) {
         env = new DatabaseEnv();
-        dbCon = new DbController();
+        this.dbCon = dbCon;
         session = dbCon.getNeo4jSession(env.env("neo4j.username"), env.env("neo4j.password"));
     }
     
