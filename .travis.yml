@@ -12,7 +12,8 @@ before_script:
  - sh -c "mysql -u root --default-character-set=utf8 gutenberg_test < CreateGutenbergTest.sql"
  - sh -c "mysql -u root --default-character-set=utf8 gutenberg_test < TestData.sql"
 # install Neo4j locally:
- - wget dist.neo4j.org/neo4j-community-2.2.0-unix.tar.gz
- - tar -xzf neo4j-community-2.2.0-unix.tar.gz
- - neo4j-community-2.2.0/bin/neo4j start
- - neo4j-community-2.2.0/bin/neo4j-shell -file neo4jData.cql
+ - wget dist.neo4j.org/neo4j-community-3.0.0-unix.tar.gz
+ - tar -xzf neo4j-community-3.0.0-unix.tar.gz
+ - neo4j-community-3.0.0/bin/neo4j start
+ - neo4j-community-3.0.0/bin/neo4j-shell -file neo4jData.cql
+ - curl -vX POST http://neo4j:neo4j@localhost:7474/user/neo4j/password -d"password=neo4j"
