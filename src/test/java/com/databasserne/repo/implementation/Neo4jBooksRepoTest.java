@@ -202,4 +202,30 @@ public class Neo4jBooksRepoTest {
         assertThat(cities, hasItem(Matchers.<City>hasProperty("name", is("Paris"))));
         assertThat(cities, hasItem(Matchers.<City>hasProperty("name", is("King"))));
     }
+    
+    @Test
+    public void getCitiesFromBookIllegalTitleTest() {
+        DatabaseEnv env = new DatabaseEnv();
+        DbController dbCon = mock(DbController.class);
+        Session session = mock(Session.class);
+        StatementResult result = mock(StatementResult.class);
+        
+        String bookTitle = "Vrøvl";
+        
+        when(dbCon.getNeo4jSession(
+                env.env("neo4j.username"),
+                env.env("neo4j.password"))).thenReturn(session);
+        
+        when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book) "
+                        + "WHERE b.name =~ \"(?i)"+bookTitle+"\" "
+                        + "RETURN DISTINCT c.name as City, c.Geolat as Geolat, c.Geolng as Geolng"))
+                .thenReturn(result);
+        when(result.hasNext())
+                .thenReturn(Boolean.FALSE);
+        
+        booksRepo = new Neo4jBooksRepo(dbCon);
+        List<City> cities = booksRepo.getCitiesFromBookTitle(bookTitle);
+                
+        assertThat(cities, is(empty()));
+    }
 }
