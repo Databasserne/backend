@@ -7,6 +7,7 @@ package com.databasserne.repo.implementation;
 
 import com.databasserne.config.DatabaseEnv;
 import com.databasserne.controllers.DbController;
+import com.databasserne.models.Author;
 import com.databasserne.models.Book;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -96,7 +97,11 @@ public class Neo4jBooksRepoTest {
                 .thenReturn("The Mystery of the Boule Cabinet: A Detective Story");
         when(rec.get("Author")).thenReturn(aVal);
         when(aVal.asString())
-                .thenReturn("Shakespeare, William");
+                .thenReturn("Shakespeare, William")
+                .thenReturn("Boccaccio, Giovanni")
+                .thenReturn("Dante Alighieri")
+                .thenReturn("Black, Edith Ferguson")
+                .thenReturn("Stevenson, Burton Egbert");
         
         booksRepo = new Neo4jBooksRepo(dbCon);
         
@@ -108,6 +113,17 @@ public class Neo4jBooksRepoTest {
         assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("Divine Comedy, Longfellow's Translation, Hell"))));
         assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("A Beautiful Possibility"))));
         assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("The Mystery of the Boule Cabinet: A Detective Story"))));
+        
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("author", 
+                is(Matchers.<Author>hasProperty("name", is("Shakespeare, William"))))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("author", 
+                is(Matchers.<Author>hasProperty("name", is("Boccaccio, Giovanni"))))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("author", 
+                is(Matchers.<Author>hasProperty("name", is("Dante Alighieri"))))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("author", 
+                is(Matchers.<Author>hasProperty("name", is("Black, Edith Ferguson"))))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("author", 
+                is(Matchers.<Author>hasProperty("name", is("Stevenson, Burton Egbert"))))));
     }
     
     @Test
