@@ -7,6 +7,7 @@ package com.databasserne.repo.implementation;
 
 import com.databasserne.models.Book;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -20,6 +21,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  *
@@ -50,7 +53,17 @@ public class Neo4jBooksRepoTest {
 
     @Test
     public void getBooksAndAuthorFromCityTest() {
-        booksRepo = new Neo4jBooksRepo();
+        booksRepo = mock(Neo4jBooksRepo.class);
+        List<Book> mockResult = new ArrayList<Book>() {{
+            add(new Book("The Complete Works of William Shakespeare"));
+            add(new Book("La Fiammetta"));
+            add(new Book("Divine Comedy, Longfellow's Translation, Hell"));
+            add(new Book("A Beautiful Possibility"));
+            add(new Book("The Mystery of the Boule Cabinet: A Detective Story"));
+        }};
+        
+        when(booksRepo.getBooksAndAuthorFromCity("Florence")).thenReturn(mockResult);
+        
         List<Book> books = booksRepo.getBooksAndAuthorFromCity("Florence");
         
         assertThat(books, not(IsEmptyCollection.empty()));
