@@ -319,7 +319,7 @@ public class Neo4jBooksRepoTest {
         
         when(session.run("MATCH (b:Book)-[:Mentions]->(c:City) "
                         + "WHERE  distance(point({longitude:c.Geolng, latitude: c.Geolat}), point({ longitude: {lng}, latitude: {lat}}))/1000 <= {distance} "
-                        + "return b.Name AS Name",
+                        + "RETURN b.name as Name",
                 Values.parameters("distance", distance, "lng", lng, "lat", lat)))
                 .thenReturn(result);
         when(result.hasNext())
