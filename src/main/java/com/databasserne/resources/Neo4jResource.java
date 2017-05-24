@@ -6,10 +6,16 @@
 package com.databasserne.resources;
 
 import com.databasserne.controllers.DbController;
+import com.databasserne.models.Book;
+import com.databasserne.models.City;
 import com.databasserne.repo.implementation.Neo4jBooksRepo;
 import com.databasserne.repo.interfaces.IBooksRepo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import java.util.List;
+import java.util.Map;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -51,5 +57,37 @@ public class Neo4jResource {
     @Produces("application/json")
     public Response searchCitiesFromBookTitle(@PathParam("book") String bookTitle) {
         return Response.status(Response.Status.OK).entity(gson.toJson(booksRepo.getCitiesFromBookTitle(bookTitle))).build();
+    }
+    
+    @GET
+    @Path("author/{authorname}")
+    @Produces("application/json")
+    public Response searchBooksWithCitiesFromAuthor(@PathParam("authorname") String authorname) {
+        JsonArray response = new JsonArray();
+        Map<Book, List<City>> books = booksRepo.getBooksWithCitiesFromAuthor(authorname);
+        for (Map.Entry<Book, List<City>> entry : books.entrySet()) {
+            Book key = entry.getKey();
+            List<City> value = entry.getValue();
+            
+            // Book json
+            JsonObject bookJson = new JsonObject();
+            bookJson.addProperty("name", key.getName());
+            
+            JsonArray citiesForBook = new JsonArray();
+            
+            for (City city : value) {
+                JsonObject cityJson = new JsonObject();
+                cityJson.addProperty("name", city.getName());
+                cityJson.addProperty("geolat", city.getGeolat());
+                cityJson.addProperty("geolng", city.getGeolng());
+                citiesForBook.add(cityJson);
+            }
+            
+            bookJson.add("cities", citiesForBook);
+            response.add(bookJson);
+        }
+        
+        
+        return Response.status(Response.Status.OK).entity(gson.toJson(response)).build();
     }
 }

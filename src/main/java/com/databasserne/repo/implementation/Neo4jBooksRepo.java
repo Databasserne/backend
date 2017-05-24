@@ -92,9 +92,9 @@ public class Neo4jBooksRepo implements IBooksRepo {
         Map<Book, List<City>> books = new HashMap<>();
         try {
             result = session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
-                                + "WHERE a.name =~ \"(?i).*{author}.*\""
-                                + "RETURN DISTINCT b.name as Book, c.name as City, c.Geolat as Geolat, c.Geolng as Geolng)",
-                    Values.parameters("author", author));
+                                + "WHERE a.name =~ {author}"
+                                + "RETURN DISTINCT b.name as Book, c.name as City, c.Geolat as Geolat, c.Geolng as Geolng",
+                    Values.parameters("author", "(?i).*"+author+".*"));
             while(result.hasNext()) {
                 rec = result.next();
                 
