@@ -77,7 +77,7 @@ public class Neo4jBooksRepoTest {
                 env.env("neo4j.password"))).thenReturn(session);
         
         when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
-                        + "WHERE c.name =~ {city}"
+                        + "WHERE c.name = {city}"
                         + "RETURN DISTINCT b.name as Book, a.name as Author",
                 Values.parameters("city", city)))
                 .thenReturn(result);
@@ -140,7 +140,7 @@ public class Neo4jBooksRepoTest {
                 env.env("neo4j.password"))).thenReturn(session);
         
         when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
-                        + "WHERE c.name =~ {city}"
+                        + "WHERE c.name = {city}"
                         + "RETURN DISTINCT b.name as Book, a.name as Author",
                 Values.parameters("city", city)))
                 .thenReturn(result);
@@ -170,7 +170,7 @@ public class Neo4jBooksRepoTest {
                 env.env("neo4j.password"))).thenReturn(session);
         
         when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book) "
-                        + "WHERE b.name =~ {bookTitle}"
+                        + "WHERE b.name = {bookTitle}"
                         + "RETURN DISTINCT c.name as City, c.Geolat as Geolat, c.Geolng as Geolng",
                 Values.parameters("bookTitle", book)))
                 .thenReturn(result);
@@ -219,7 +219,7 @@ public class Neo4jBooksRepoTest {
                 env.env("neo4j.password"))).thenReturn(session);
         
         when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book) "
-                        + "WHERE b.name =~ {bookTitle}"
+                        + "WHERE b.name = {bookTitle}"
                         + "RETURN DISTINCT c.name as City, c.Geolat as Geolat, c.Geolng as Geolng",
                 Values.parameters("bookTitle", bookTitle)))
                 .thenReturn(result);
@@ -250,7 +250,7 @@ public class Neo4jBooksRepoTest {
                 env.env("neo4j.password"))).thenReturn(session);
         
         when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
-                        + "WHERE a.name =~ {author}"
+                        + "WHERE a.name = {author}"
                         + "RETURN DISTINCT b.name as Book, c.name as City, c.Geolat as Geolat, c.Geolng as Geolng",
                 Values.parameters("author", author)))
                 .thenReturn(result);
@@ -288,7 +288,7 @@ public class Neo4jBooksRepoTest {
                 env.env("neo4j.password"))).thenReturn(session);
         
         when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
-                        + "WHERE a.name =~ {author}"
+                        + "WHERE a.name = {author}"
                         + "RETURN DISTINCT b.name as Book, c.name as City, c.Geolat as Geolat, c.Geolng as Geolng",
                 Values.parameters("author", author)))
                 .thenReturn(result);

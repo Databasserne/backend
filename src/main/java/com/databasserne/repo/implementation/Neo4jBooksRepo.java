@@ -44,7 +44,7 @@ public class Neo4jBooksRepo implements IBooksRepo {
         List<Book> books = new ArrayList<>();
         try {
             result = session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
-                        + "WHERE c.name =~ {city}"
+                        + "WHERE c.name = {city}"
                         + "RETURN DISTINCT b.name as Book, a.name as Author",
                     Values.parameters("city", city));
             while(result.hasNext()) {
@@ -67,7 +67,7 @@ public class Neo4jBooksRepo implements IBooksRepo {
         List<City> cities = new ArrayList<>();
         try {
             result = session.run("MATCH (c:City)<-[:Mentions]-(b:Book) "
-                                + "WHERE b.name =~ {bookTitle}"
+                                + "WHERE b.name = {bookTitle}"
                                 + "RETURN DISTINCT c.name as City, c.Geolat as Geolat, c.Geolng as Geolng",
                     Values.parameters("bookTitle", bookTitle));
             while(result.hasNext()) {
@@ -92,7 +92,7 @@ public class Neo4jBooksRepo implements IBooksRepo {
         Map<Book, List<City>> books = new HashMap<>();
         try {
             result = session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
-                                + "WHERE a.name =~ {author}"
+                                + "WHERE a.name = {author}"
                                 + "RETURN DISTINCT b.name as Book, c.name as City, c.Geolat as Geolat, c.Geolng as Geolng",
                     Values.parameters("author", author));
             while(result.hasNext()) {
