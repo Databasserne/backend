@@ -300,4 +300,80 @@ public class Neo4jBooksRepoTest {
         
         assertTrue(books.isEmpty());
     }
+    
+    @Test
+    public void getBooksMentioningNearbyCityTest() {
+        DatabaseEnv env = new DatabaseEnv();
+        DbController dbCon = mock(DbController.class);
+        Session session = mock(Session.class);
+        StatementResult result = mock(StatementResult.class);
+        Record rec = mock(Record.class);
+        Value val = mock(Value.class);
+        float lat = 37;
+        float lng = -122;
+        float distance = 25;
+        
+        when(dbCon.getNeo4jSession(
+                env.env("neo4j.username"),
+                env.env("neo4j.password"))).thenReturn(session);
+        
+        when(session.run("MATCH (b:Book)-[:Mentions]->(c:City) "
+                        + "WHERE  distance(point({longitude:c.Geolng, latitude: c.Geolat}), point({ longitude: {lng}, latitude: {lat}}))/1000 <= {distance} "
+                        + "RETURN b.name as Name",
+                Values.parameters("distance", distance, "lng", lng, "lat", lat)))
+                .thenReturn(result);
+        when(result.hasNext())
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.FALSE);
+        when(result.next()).thenReturn(rec);
+        when(rec.get("Name")).thenReturn(val);
+        when(val.asString())
+                .thenReturn("Punchinello, Volume 1, No. 26, September 24, 1870")
+                .thenReturn("Punchinello, Volume 1, No. 19, August 6, 1870")
+                .thenReturn("The Father of British Canada: a Chronicle of Carleton")
+                .thenReturn("Beneath the Banner: Being Narratives of Noble Lives and Brave Deeds")
+                .thenReturn("Salute to Adventurers");
+        
+        booksRepo = new Neo4jBooksRepo(dbCon);
+        List<Book> books = booksRepo.getBooksMentioningNearbyCity(lat, lng, distance);
+        
+        assertThat(books, not(IsEmptyCollection.empty()));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("Punchinello, Volume 1, No. 26, September 24, 1870"))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("Punchinello, Volume 1, No. 19, August 6, 1870"))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("The Father of British Canada: a Chronicle of Carleton"))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("Beneath the Banner: Being Narratives of Noble Lives and Brave Deeds"))));
+        assertThat(books, hasItem(Matchers.<Book>hasProperty("name", is("Salute to Adventurers"))));
+    }
+    
+    @Test
+    public void getBooksMentioningNearbyCityNoBooksTest() {
+        DatabaseEnv env = new DatabaseEnv();
+        DbController dbCon = mock(DbController.class);
+        Session session = mock(Session.class);
+        StatementResult result = mock(StatementResult.class);
+        float lat = 37;
+        float lng = -122;
+        float distance = 25;
+        
+        when(dbCon.getNeo4jSession(
+                env.env("neo4j.username"),
+                env.env("neo4j.password"))).thenReturn(session);
+        
+        when(session.run("MATCH (b:Book)-[:Mentions]->(c:City) "
+                        + "WHERE  distance(point({longitude:c.Geolng, latitude: c.Geolat}), point({ longitude: {lng}, latitude: {lat}}))/1000 <= {distance} "
+                        + "return b.Name AS Name",
+                Values.parameters("distance", distance, "lng", lng, "lat", lat)))
+                .thenReturn(result);
+        when(result.hasNext())
+                .thenReturn(Boolean.FALSE);
+        
+        booksRepo = new Neo4jBooksRepo(dbCon);
+        List<Book> books = booksRepo.getBooksMentioningNearbyCity(lat, lng, distance);
+        
+        assertTrue(books.isEmpty());
+    }
 }
