@@ -13,12 +13,14 @@ import com.databasserne.models.City;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.empty;
 import org.hamcrest.collection.IsEmptyCollection;
+import org.hamcrest.collection.IsMapContaining;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -34,6 +36,7 @@ import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 import org.neo4j.driver.v1.Value;
+import org.neo4j.driver.v1.Values;
 
 /**
  *
@@ -78,8 +81,9 @@ public class Neo4jBooksRepoTest {
                 env.env("neo4j.password"))).thenReturn(session);
         
         when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
-                        + "WHERE c.name =~ \"(?i)"+city+"\""
-                        + "RETURN DISTINCT b.name as Book, a.name as Author"))
+                        + "WHERE c.name =~ \"(?i){city}\""
+                        + "RETURN DISTINCT b.name as Book, a.name as Author",
+                Values.parameters("city", city)))
                 .thenReturn(result);
         when(result.hasNext())
                 .thenReturn(Boolean.TRUE)
@@ -140,8 +144,9 @@ public class Neo4jBooksRepoTest {
                 env.env("neo4j.password"))).thenReturn(session);
         
         when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
-                        + "WHERE c.name =~ \"(?i)"+city+"\""
-                        + "RETURN DISTINCT b.name as Book, a.name as Author"))
+                        + "WHERE c.name =~ \"(?i){city}\""
+                        + "RETURN DISTINCT b.name as Book, a.name as Author",
+                Values.parameters("city", city)))
                 .thenReturn(result);
         when(result.hasNext())
                 .thenReturn(Boolean.FALSE);
@@ -169,8 +174,9 @@ public class Neo4jBooksRepoTest {
                 env.env("neo4j.password"))).thenReturn(session);
         
         when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book) "
-                        + "WHERE b.name =~ \"(?i)"+book+"\" "
-                        + "RETURN DISTINCT c.name as City, c.Geolat as Geolat, c.Geolng as Geolng"))
+                        + "WHERE b.name =~ \"(?i){bookTitle}\""
+                        + "RETURN DISTINCT c.name as City, c.Geolat as Geolat, c.Geolng as Geolng",
+                Values.parameters("bookTitle", book)))
                 .thenReturn(result);
         when(result.hasNext())
                 .thenReturn(Boolean.TRUE)
@@ -217,7 +223,7 @@ public class Neo4jBooksRepoTest {
                 env.env("neo4j.password"))).thenReturn(session);
         
         when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book) "
-                        + "WHERE b.name =~ \"(?i)"+bookTitle+"\" "
+                        + "WHERE b.name =~ \"(?i)"+bookTitle+"\""
                         + "RETURN DISTINCT c.name as City, c.Geolat as Geolat, c.Geolng as Geolng"))
                 .thenReturn(result);
         when(result.hasNext())
@@ -227,5 +233,53 @@ public class Neo4jBooksRepoTest {
         List<City> cities = booksRepo.getCitiesFromBookTitle(bookTitle);
                 
         assertThat(cities, is(empty()));
+    }
+    
+    @Test
+    public void getBooksWithCitiesFromAuthorTest() {
+        DatabaseEnv env = new DatabaseEnv();
+        DbController dbCon = mock(DbController.class);
+        Session session = mock(Session.class);
+        StatementResult result = mock(StatementResult.class);
+        Record rec = mock(Record.class);
+        Value val = mock(Value.class);
+        Value cityVal = mock(Value.class);
+        Value valLat = mock(Value.class);
+        Value valLng = mock(Value.class);
+        String author = "Unknown";
+        
+        when(dbCon.getNeo4jSession(
+                env.env("neo4j.username"),
+                env.env("neo4j.password"))).thenReturn(session);
+        
+        when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
+                        + "WHERE a.name =~ {author}"
+                        + "RETURN DISTINCT b.name as Book, c.name as City, c.Geolat as Geolat, c.Geolng as Geolng",
+                Values.parameters("author", "(?i).*"+author+".*")))
+                .thenReturn(result);
+        when(result.hasNext())
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.FALSE);
+        when(result.next()).thenReturn(rec);
+        when(rec.get("Book")).thenReturn(val);
+        when(rec.get("City")).thenReturn(cityVal);
+        when(rec.get("Geolat")).thenReturn(valLat);
+        when(rec.get("Geolng")).thenReturn(valLng);
+        when(val.asString())
+                .thenReturn("The King James Version of the Bible");
+        when(cityVal.asString()).thenReturn("Florence");
+        when(valLat.asDouble()).thenReturn(1.0);
+        when(valLng.asDouble()).thenReturn(1.0);
+        
+        booksRepo = new Neo4jBooksRepo(dbCon);
+        Map<Book, List<City>> books = booksRepo.getBooksWithCitiesFromAuthor("Unknown");
+        
+        assertTrue(!books.isEmpty());
+        assertThat(books, IsMapContaining.hasKey(Matchers.<Book>hasProperty("name", is("The King James Version of the Bible"))));
+    }
+    
+    @Test
+    public void getBooksWithCitiesFromIllegalAuthorTest() {
+        
     }
 }
