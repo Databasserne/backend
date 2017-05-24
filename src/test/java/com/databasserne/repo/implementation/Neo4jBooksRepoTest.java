@@ -13,12 +13,14 @@ import com.databasserne.models.City;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.empty;
 import org.hamcrest.collection.IsEmptyCollection;
+import org.hamcrest.collection.IsMapContaining;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -227,5 +229,43 @@ public class Neo4jBooksRepoTest {
         List<City> cities = booksRepo.getCitiesFromBookTitle(bookTitle);
                 
         assertThat(cities, is(empty()));
+    }
+    
+    @Test
+    public void getBooksWithCitiesFromAuthorTest() {
+        DatabaseEnv env = new DatabaseEnv();
+        DbController dbCon = mock(DbController.class);
+        Session session = mock(Session.class);
+        StatementResult result = mock(StatementResult.class);
+        Record rec = mock(Record.class);
+        Value val = mock(Value.class);
+        String author = "Unknown";
+        
+        when(dbCon.getNeo4jSession(
+                env.env("neo4j.username"),
+                env.env("neo4j.password"))).thenReturn(session);
+        
+        when(session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
+                        + "WHERE a.name =~ \"(?i).*"+author+".*\" "
+                        + "RETURN DISTINCT b.name as Book, c.name as City, c.Geolat as Geolat, c.Geolng as Geolng))"))
+                .thenReturn(result);
+        when(result.hasNext())
+                .thenReturn(Boolean.TRUE)
+                .thenReturn(Boolean.FALSE);
+        when(result.next()).thenReturn(rec);
+        when(rec.get("Book")).thenReturn(val);
+        when(val.asString())
+                .thenReturn("The King James Version of the Bible");
+        
+        booksRepo = new Neo4jBooksRepo(dbCon);
+        Map<Book, List<City>> books = booksRepo.getBooksWithCitiesFromAuthor("Unknown");
+        
+        assertTrue(!books.isEmpty());
+        assertThat(books, IsMapContaining.hasKey(Matchers.<Book>hasProperty("name", is("The King James Version of the Bible"))));
+    }
+    
+    @Test
+    public void getBooksWithCitiesFromIllegalAuthorTest() {
+        
     }
 }
