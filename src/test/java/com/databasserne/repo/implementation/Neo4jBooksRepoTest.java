@@ -318,9 +318,9 @@ public class Neo4jBooksRepoTest {
                 env.env("neo4j.password"))).thenReturn(session);
         
         when(session.run("MATCH (b:Book)-[:Mentions]->(c:City) "
-                        + "WHERE  distance(point({longitude:c.Geolng, latitude: c.Geolat}), point({ longitude: 8.53468, latitude: 51.19248}))/1000 <= {distance} "
-                        + "return b",
-                Values.parameters("distance", distance)))
+                        + "WHERE  distance(point({longitude:c.Geolng, latitude: c.Geolat}), point({ longitude: {lng}, latitude: {lat}}))/1000 <= {distance} "
+                        + "return b.Name AS Name",
+                Values.parameters("distance", distance, "lng", lng, "lat", lat)))
                 .thenReturn(result);
         when(result.hasNext())
                 .thenReturn(Boolean.TRUE)
@@ -330,7 +330,7 @@ public class Neo4jBooksRepoTest {
                 .thenReturn(Boolean.TRUE)
                 .thenReturn(Boolean.FALSE);
         when(result.next()).thenReturn(rec);
-        when(rec.get("Book")).thenReturn(val);
+        when(rec.get("Name")).thenReturn(val);
         when(val.asString())
                 .thenReturn("Punchinello, Volume 1, No. 26, September 24, 1870")
                 .thenReturn("Punchinello, Volume 1, No. 19, August 6, 1870")

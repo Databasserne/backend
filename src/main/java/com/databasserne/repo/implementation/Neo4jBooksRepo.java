@@ -122,7 +122,23 @@ public class Neo4jBooksRepo implements IBooksRepo {
 
     @Override
     public List<Book> getBooksMentioningNearbyCity(float lat, float lng, float distance) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Book> books = new ArrayList<>();
+        try {
+            result = session.run("MATCH (b:Book)-[:Mentions]->(c:City) "
+                                + "WHERE  distance(point({longitude:c.Geolng, latitude: c.Geolat}), point({ longitude: {lng}, latitude: {lat}}))/1000 <= {distance} "
+                                + "return b.Name AS Name",
+                    Values.parameters("distance", distance, "lng", lng, "lat", lat));
+            while(result.hasNext()) {
+                rec = result.next();
+                
+                Book book = new Book(rec.get("Name").asString());
+                books.add(book);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return books;
+        }
     }
     
 }
