@@ -44,9 +44,9 @@ public class Neo4jBooksRepo implements IBooksRepo {
         List<Book> books = new ArrayList<>();
         try {
             result = session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
-                        + "WHERE c.name =~ \"(?i){city}\""
+                        + "WHERE c.name =~ {city}"
                         + "RETURN DISTINCT b.name as Book, a.name as Author",
-                    Values.parameters("city", city));
+                    Values.parameters("city", "(?i)"+city));
             while(result.hasNext()) {
                 rec = result.next();
                 
@@ -67,9 +67,9 @@ public class Neo4jBooksRepo implements IBooksRepo {
         List<City> cities = new ArrayList<>();
         try {
             result = session.run("MATCH (c:City)<-[:Mentions]-(b:Book) "
-                                + "WHERE b.name =~ \"(?i){bookTitle}\""
+                                + "WHERE b.name =~ {bookTitle}"
                                 + "RETURN DISTINCT c.name as City, c.Geolat as Geolat, c.Geolng as Geolng",
-                    Values.parameters("bookTitle", bookTitle));
+                    Values.parameters("bookTitle", "(?i)"+bookTitle));
             while(result.hasNext()) {
                 rec = result.next();
                 Double doubleLat = rec.get("Geolat").asDouble();
