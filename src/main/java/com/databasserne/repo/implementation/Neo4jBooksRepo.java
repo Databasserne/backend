@@ -12,11 +12,13 @@ import com.databasserne.models.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.Values;
 
 /**
  *
@@ -42,8 +44,9 @@ public class Neo4jBooksRepo implements IBooksRepo {
         List<Book> books = new ArrayList<>();
         try {
             result = session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
-                        + "WHERE c.name =~ \"(?i)"+city+"\""
-                        + "RETURN DISTINCT b.name as Book, a.name as Author");
+                        + "WHERE c.name =~ \"(?i){city}\""
+                        + "RETURN DISTINCT b.name as Book, a.name as Author",
+                    Values.parameters("city", city));
             while(result.hasNext()) {
                 rec = result.next();
                 
@@ -64,8 +67,9 @@ public class Neo4jBooksRepo implements IBooksRepo {
         List<City> cities = new ArrayList<>();
         try {
             result = session.run("MATCH (c:City)<-[:Mentions]-(b:Book) "
-                                + "WHERE b.name =~ \"(?i)"+bookTitle+"\" "
-                                + "RETURN DISTINCT c.name as City, c.Geolat as Geolat, c.Geolng as Geolng");
+                                + "WHERE b.name =~ \"(?i){bookTitle}\""
+                                + "RETURN DISTINCT c.name as City, c.Geolat as Geolat, c.Geolng as Geolng",
+                    Values.parameters("bookTitle", bookTitle));
             while(result.hasNext()) {
                 rec = result.next();
                 Double doubleLat = rec.get("Geolat").asDouble();
@@ -85,7 +89,35 @@ public class Neo4jBooksRepo implements IBooksRepo {
 
     @Override
     public Map<Book, List<City>> getBooksWithCitiesFromAuthor(String author) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Map<Book, List<City>> books = new HashMap<>();
+        try {
+            result = session.run("MATCH (c:City)<-[:Mentions]-(b:Book)<-[:Authored]-(a:Author) "
+                                + "WHERE a.name =~ \"(?i).*{author}.*\""
+                                + "RETURN DISTINCT b.name as Book, c.name as City, c.Geolat as Geolat, c.Geolng as Geolng)",
+                    Values.parameters("author", author));
+            while(result.hasNext()) {
+                rec = result.next();
+                
+                Double doubleLat = rec.get("Geolat").asDouble();
+                Double doubleLng = rec.get("Geolng").asDouble();
+                Float lat = doubleLat.floatValue();
+                Float lng = doubleLng.floatValue();
+                
+                Book b = new Book(rec.get("Book").asString());
+                final City city = new City(rec.get("City").asString(), lat, lng);
+                if(books.containsKey(b)) {
+                    books.get(b).add(city);
+                } else {
+                    books.put(b, new ArrayList<City>(){{
+                        add(city);
+                    }});
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return books;
+        }
     }
 
     @Override
