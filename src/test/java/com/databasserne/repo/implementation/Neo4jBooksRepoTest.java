@@ -351,6 +351,29 @@ public class Neo4jBooksRepoTest {
     
     @Test
     public void getBooksMentioningNearbyCityNoBooksTest() {
+        DatabaseEnv env = new DatabaseEnv();
+        DbController dbCon = mock(DbController.class);
+        Session session = mock(Session.class);
+        StatementResult result = mock(StatementResult.class);
+        float lat = 37;
+        float lng = -122;
+        float distance = 25;
         
+        when(dbCon.getNeo4jSession(
+                env.env("neo4j.username"),
+                env.env("neo4j.password"))).thenReturn(session);
+        
+        when(session.run("MATCH (b:Book)-[:Mentions]->(c:City) "
+                        + "WHERE  distance(point({longitude:c.Geolng, latitude: c.Geolat}), point({ longitude: {lng}, latitude: {lat}}))/1000 <= {distance} "
+                        + "return b.Name AS Name",
+                Values.parameters("distance", distance, "lng", lng, "lat", lat)))
+                .thenReturn(result);
+        when(result.hasNext())
+                .thenReturn(Boolean.FALSE);
+        
+        booksRepo = new Neo4jBooksRepo(dbCon);
+        List<Book> books = booksRepo.getBooksMentioningNearbyCity(lat, lng, distance);
+        
+        assertTrue(books.isEmpty());
     }
 }
