@@ -17,15 +17,15 @@ import org.junit.Before;
  *
  * @author alexander
  */
-public class MysqlResourceTest {
+public class Neo4jResourceTest {
     
-    public MysqlResourceTest() {
+    public Neo4jResourceTest() {
     }
     
     @Before
     public void setUp() {
         RestAssured.port = 8080;
-        RestAssured.basePath = "/web/api/mysql";
+        RestAssured.basePath = "/web/api/neo4j";
     }
     
     @Test
@@ -35,7 +35,7 @@ public class MysqlResourceTest {
         .then()
             .assertThat()
                 .body("", hasSize(greaterThan(0)))
-                .body("find { it.name == 'The Complete Works of William Shakespeare'}.name",
+                .body("find { it.name == 'The Complete Works of William Shakespeare'}.name", 
                         equalTo("The Complete Works of William Shakespeare"))
                 .body("find { it.name == 'The Complete Works of William Shakespeare'}.author.name", 
                         equalTo("Shakespeare, William"));
@@ -48,11 +48,11 @@ public class MysqlResourceTest {
         .then()
             .assertThat()
                 .body("", hasSize(greaterThan(0)))
-                .body("find { it.name == 'Tyre'}.name",
+                .body("find { it.name == 'Tyre'}.name", 
                         equalTo("Tyre"))
-                .body("find { it.name == 'Tyre'}.geolat",
+                .body("find { it.name == 'Tyre'}.geolat", 
                         equalTo(33.27333f))
-                .body("find { it.name == 'Tyre'}.geolng",
+                .body("find { it.name == 'Tyre'}.geolng", 
                         equalTo(35.19389f));
     }
     
