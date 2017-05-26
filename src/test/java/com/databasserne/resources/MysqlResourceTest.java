@@ -24,7 +24,7 @@ public class MysqlResourceTest {
     
     @Before
     public void setUp() {
-        RestAssured.port = 8080;
+        RestAssured.port = 8084;
         RestAssured.basePath = "/web/api/mysql";
     }
     

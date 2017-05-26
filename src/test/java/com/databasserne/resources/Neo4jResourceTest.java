@@ -24,7 +24,7 @@ public class Neo4jResourceTest {
     
     @Before
     public void setUp() {
-        RestAssured.port = 8080;
+        RestAssured.port = 8084;
         RestAssured.basePath = "/web/api/neo4j";
     }
     
